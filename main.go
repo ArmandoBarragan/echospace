@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,5 +25,8 @@ func homePage(c *gin.Context) {
 func main() {
 	var router *gin.Engine = gin.Default()
 	router.GET("/home", homePage)
-	router.Run("localhost:8000")
+
+	var host string = os.Getenv("HOST")
+	var port string = os.Getenv("PORT")
+	router.Run(fmt.Sprintf("%s:%s", host, port))
 }
