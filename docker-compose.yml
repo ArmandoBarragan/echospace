@@ -3,11 +3,25 @@ version: '3.8'
 services:
   web:
     build:
-      context: .
+      context: ./web
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - ./:/app
+      - ./web/:/app
     command: "go run ."
     env_file: ./example.env
+  
+  neo:
+    image: neo4j:5.5.0
+    ports:
+      - "7474:7474"  # Browser UI
+      - "7687:7687"  # Bolt protocol (used by drivers)
+    env_file: ./example.env
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
