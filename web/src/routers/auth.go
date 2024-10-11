@@ -2,6 +2,7 @@ package routers
 
 import (
 	"livaf/src/schemas"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -12,18 +13,19 @@ import (
 )
 
 func createUser(c *gin.Context) {
-	var newAccount schemas.CreateAccount
-
-	if err := c.ShouldBindJSON(&newAccount); err != nil {
+	var newAccountSchema schemas.CreateAccount
+	if err := c.ShouldBindJSON(&newAccountSchema); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 	}
-	newAccount.Create()
-	c.JSON(201, gin.H{
-		"message": "Account created successfuly",
-		"data": gin.H{
-			"id": newAccount.Id,
-		},
-	})
+	newAccount, err := newAccountSchema.Create()
+	if err != nil {
+		log.Fatalf(err.Error())
+		jsonError(c, 500, nil)
+		return
+	}
+
+	jsonSuccess(c, 201, "Account created successfully", gin.H{"id": newAccount.Id})
+
 }
 
 func login(c *gin.Context) {
