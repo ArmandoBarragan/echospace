@@ -9,5 +9,6 @@ func InitRouter() *gin.Engine {
 	var router *gin.Engine = gin.Default()
 	router.GET("/home", homePage)
 	router.GET("/login", login)
+	router.POST("/create_user", createUser)
 	return router
 }

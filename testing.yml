@@ -9,7 +9,7 @@ services:
       - "8000:8000"
     volumes:
       - ./web/:/app
-    command: "go run ."
+    command: "go test ./src/tests"
     env_file: ./example.env
     depends_on:
       - neo
@@ -20,10 +20,3 @@ services:
       - "7474:7474"  # Browser UI
       - "7687:7687"  # Bolt protocol (used by drivers)
     env_file: ./example.env
-    volumes:
-      - neo4j_data:/data
-      - neo4j_logs:/logs
-
-volumes:
-  neo4j_data:
-  neo4j_logs:
