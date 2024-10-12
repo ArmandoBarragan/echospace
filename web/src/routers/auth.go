@@ -1,8 +1,9 @@
 package routers
 
 import (
-	"fmt"
+	"errors"
 	"livaf/src/schemas"
+	"livaf/src/utils"
 	"log"
 	"net/http"
 	"os"
@@ -16,20 +17,22 @@ import (
 func createUser(c *gin.Context) {
 	var newAccountSchema schemas.CreateAccount
 	if err := c.ShouldBindJSON(&newAccountSchema); err != nil {
-		jsonError(c, 400, err)
+		utils.JSONError(c, 400, err)
 		return
 	}
-	fmt.Println(newAccountSchema.FirstName)
+	if !newAccountSchema.PasswordIsValid() {
+		utils.JSONError(c, 400, errors.New("password is not valid. It requires at least one special character"))
+		return
+	}
 	newAccount, err := newAccountSchema.Create()
 
 	if err != nil {
 		log.Println(err.Error())
-		jsonError(c, 500, nil)
+		utils.JSONError(c, 500, nil)
 		return
 	}
 
-	jsonSuccess(c, 201, "Account created successfully", gin.H{"id": newAccount.Id})
-
+	utils.JSONSuccess(c, 201, "Account created successfully", gin.H{"id": newAccount.Id})
 }
 
 func login(c *gin.Context) {

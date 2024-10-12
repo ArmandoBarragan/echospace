@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"livaf/conf"
+	"livaf/src/utils"
+	"regexp"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
@@ -21,6 +23,13 @@ type CreateAccount struct {
 	PasswordConfirmation string `json:"password_confirmation"`
 }
 
+func (createAccount CreateAccount) PasswordIsValid() bool {
+	var passwordsMatch bool = createAccount.Password == createAccount.PasswordConfirmation
+	var re *regexp.Regexp = regexp.MustCompile(`[!@#$%^&*(),.?":{}|<>]1234567890`)
+	var passwordContainsSpecialCharacter bool = re.MatchString(createAccount.Password)
+	return passwordsMatch && passwordContainsSpecialCharacter
+}
+
 func (createAccount CreateAccount) Create() (*User, error) {
 	session, err := conf.GetNeoSession()
 	if err != nil {
@@ -32,6 +41,10 @@ func (createAccount CreateAccount) Create() (*User, error) {
 		password: $password})
 		RETURN ID(u) AS id, u.username AS username, u.first_name AS first_name, u.last_name AS last_name
 	`
+	password, err := utils.HashPassword(createAccount.Password)
+	if err != nil {
+		return nil, err
+	}
 	result, err := session.ExecuteWrite(
 		context.Background(),
 		func(tx neo4j.ManagedTransaction) (interface{}, error) {
@@ -39,7 +52,7 @@ func (createAccount CreateAccount) Create() (*User, error) {
 				"username":   createAccount.Username,
 				"first_name": createAccount.FirstName,
 				"last_name":  createAccount.LastName,
-				"password":   createAccount.Password,
+				"password":   password,
 			})
 			if err != nil {
 				return nil, err
