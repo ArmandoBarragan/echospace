@@ -14,12 +14,15 @@ import (
 
 func createUser(c *gin.Context) {
 	var newAccountSchema schemas.CreateAccount
-	if err := c.ShouldBindJSON(&newAccountSchema); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+	if err := c.ShouldBind(&newAccountSchema); err != nil {
+		jsonError(c, 400, err)
+		return
 	}
+
 	newAccount, err := newAccountSchema.Create()
+
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Println(err.Error())
 		jsonError(c, 500, nil)
 		return
 	}
@@ -38,6 +41,7 @@ func login(c *gin.Context) {
 		"username": "General Kenobi",
 		"exp":      time.Now().Add(time.Hour * time.Duration(jwtExpirationHours)).Unix(),
 	})
+
 	var secretKey string = os.Getenv("SECRET_KEY")
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
