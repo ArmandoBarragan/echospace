@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fmt"
 	"livaf/src/schemas"
 	"log"
 	"net/http"
@@ -14,11 +15,11 @@ import (
 
 func createUser(c *gin.Context) {
 	var newAccountSchema schemas.CreateAccount
-	if err := c.ShouldBind(&newAccountSchema); err != nil {
+	if err := c.ShouldBindJSON(&newAccountSchema); err != nil {
 		jsonError(c, 400, err)
 		return
 	}
-
+	fmt.Println(newAccountSchema.FirstName)
 	newAccount, err := newAccountSchema.Create()
 
 	if err != nil {

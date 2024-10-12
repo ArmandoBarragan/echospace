@@ -28,10 +28,9 @@ func (createAccount CreateAccount) Create() (*User, error) {
 	}
 	defer session.Close(context.Background())
 	var query string = `
-		CREATE (u:User {username: $username, first_name: $first_name, last_name: $last_name
-		password: $password}
-		RETURN u.id as id, u.username AS username, u.first_name AS first_name, u.last_name AS last_name
-		)
+		CREATE (u:User {username: $username, first_name: $first_name, last_name: $last_name,
+		password: $password})
+		RETURN ID(u) AS id, u.username AS username, u.first_name AS first_name, u.last_name AS last_name
 	`
 	result, err := session.ExecuteWrite(
 		context.Background(),
@@ -47,11 +46,12 @@ func (createAccount CreateAccount) Create() (*User, error) {
 			}
 			if record.Next(context.Background()) {
 				id, _ := record.Record().Get("id")
+				idInt64 := id.(int64)
 				username, _ := record.Record().Get("username")
 				firstName, _ := record.Record().Get("first_name")
 				lastName, _ := record.Record().Get("last_name")
 				var user *User = &User{
-					Id:        id.(int),
+					Id:        int(idInt64),
 					Username:  username.(string),
 					FirstName: firstName.(string),
 					LastName:  lastName.(string),
