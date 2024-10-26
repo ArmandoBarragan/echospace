@@ -20,8 +20,12 @@ func createUser(c *gin.Context) {
 		utils.JSONError(c, 400, err)
 		return
 	}
+	if newAccountSchema.Password != newAccountSchema.PasswordConfirmation {
+		utils.JSONError(c, 400, errors.New("passwords don't match"))
+		return
+	}
 	if !newAccountSchema.PasswordIsValid() {
-		utils.JSONError(c, 400, errors.New("password is not valid. It requires at least one special character"))
+		utils.JSONError(c, 400, errors.New("password is not valid. It requires at least one special character and one digit"))
 		return
 	}
 	newAccount, err := newAccountSchema.Create()

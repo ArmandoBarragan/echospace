@@ -24,10 +24,11 @@ type CreateAccount struct {
 }
 
 func (createAccount CreateAccount) PasswordIsValid() bool {
-	var passwordsMatch bool = createAccount.Password == createAccount.PasswordConfirmation
-	var re *regexp.Regexp = regexp.MustCompile(`[!@#$%^&*(),.?":{}|<>]1234567890`)
+	var re *regexp.Regexp = regexp.MustCompile(`[!@#$%^&*(),.?":{}|<>]`)
+	var reDigit *regexp.Regexp = regexp.MustCompile("[0-9]")
 	var passwordContainsSpecialCharacter bool = re.MatchString(createAccount.Password)
-	return passwordsMatch && passwordContainsSpecialCharacter
+	var passwordContainsDigit bool = reDigit.MatchString(createAccount.Password)
+	return passwordContainsSpecialCharacter && passwordContainsDigit
 }
 
 func (createAccount CreateAccount) Create() (*User, error) {
