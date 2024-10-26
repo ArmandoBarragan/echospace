@@ -1,9 +1,9 @@
 package main
 
 import (
+	"echospace/conf"
+	"echospace/src/routers"
 	"fmt"
-	"livaf/conf"
-	"livaf/src/routers"
 
 	"github.com/gin-gonic/gin"
 )

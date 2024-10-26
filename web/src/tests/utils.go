@@ -1,8 +1,8 @@
 package test
 
 import (
-	"livaf/conf"
-	"livaf/src/routers"
+	"echospace/conf"
+	"echospace/src/routers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

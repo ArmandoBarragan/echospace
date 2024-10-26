@@ -2,9 +2,9 @@ package schemas
 
 import (
 	"context"
+	"echospace/conf"
+	"echospace/src/utils"
 	"errors"
-	"livaf/conf"
-	"livaf/src/utils"
 	"regexp"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"

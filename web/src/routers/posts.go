@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"livaf/src/schemas"
+	"echospace/src/schemas"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
